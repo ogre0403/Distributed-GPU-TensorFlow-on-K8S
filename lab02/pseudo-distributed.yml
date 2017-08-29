@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pseudo-distributed
+spec:
+  restartPolicy: Never
+  containers:
+  - image: tensorflow/tensorflow:1.0.1
+    name: pseudo-distributed
+    command: ["/bin/sh", "-c"]
+    args: ["curl -L https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab02/bg_dist.py  -o /opt/bg_dist.py; /run_jupyter.sh"]
