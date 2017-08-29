@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tensorflow-gpu
+spec:
+  restartPolicy: Never
+  containers:
+  - image: gcr.io/tensorflow/tensorflow:latest-gpu
+    name: gpu-container-1
+    command: ["python"]
+    env:
+    - name: LD_LIBRARY_PATH
+      value: /usr/lib/nvidia
+    args:
+    - -u
+    - -c
+    - from tensorflow.python.client import device_lib; print device_lib.list_local_devices()
+    resources:
+      limits:
+        alpha.kubernetes.io/nvidia-gpu: 2 # requests one GPU
+    volumeMounts:
+    - mountPath: /usr/local/nvidia/bin
+      name: bin
+    - mountPath: /usr/lib/nvidia/
+      name: lib
+    - name: nvidia-driver-367-48
+      mountPath: /usr/local/nvidia
+      readOnly: true
+
+  volumes:
+   - name: nvidia-driver-367-48
+     hostPath:
+        path: /var/lib/nvidia-docker/volumes/nvidia_driver/367.48
+   - name: bin
+     hostPath:
+        path: /var/lib/nvidia-docker/volumes/nvidia_driver/367.48/bin
+   - name: lib
+     hostPath:
+        path: /var/lib/nvidia-docker/volumes/nvidia_driver/367.48/lib64
