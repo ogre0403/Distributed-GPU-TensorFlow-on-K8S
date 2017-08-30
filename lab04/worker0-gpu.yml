@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: worker0
+spec:
+  template:
+    metadata:
+      labels:
+        app: worker0
+        role: worker
+    spec:
+      containers:
+      - name: worker0
+        image: tensorflow/tensorflow:1.0.1-gpu
+        ports:
+        - containerPort: 2222
+        command: ["/bin/sh", "-c"]
+        args: ["curl -L https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab04/bg_dist.py  -o /opt/bg_dist.py;
+                python /opt/bg_dist.py --job_name=worker --task_index=0"]
+        resources:
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1 # requests one GPU
+        volumeMounts:
+        - name: bin
+          mountPath: /usr/local/nvidia/bin
+        - name: lib
+          mountPath: /usr/lib/nvidia/
+        - name: nvidia-driver-367-48
+          mountPath: /usr/local/nvidia
+          readOnly: true
+      restartPolicy: Never
+      volumes:
+        - name: nvidia-driver-367-48
+          hostPath:
+            path: /var/lib/nvidia-docker/volumes/nvidia_driver/367.48
+        - name: bin
+          hostPath:
+            path: /var/lib/nvidia-docker/volumes/nvidia_driver/367.48/bin
+        - name: lib
+          hostPath:
+            path: /var/lib/nvidia-docker/volumes/nvidia_driver/367.48/lib64
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: tf-worker0-service
+  name: worker0
+spec:
+  selector:
+    app: worker0
+  ports:
+  - port: 2222
+    targetPort: 2222
