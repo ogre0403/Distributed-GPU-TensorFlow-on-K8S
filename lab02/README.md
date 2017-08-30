@@ -1,12 +1,12 @@
 ## Run pseudo-distributed Tensorflow in single Pod
 ```bash
-# kubectl create -f pseudo-distributed.yml
+$ kubectl create -f pseudo-distributed.yml
 ```
 According to [ClusterSpec](https://github.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/blob/048c9a1c1792bc7aaff0b843cd8e94daefa795fb/lab02/bg_dist.py#L15) in this example, we have one parameter server  and two workers.  We  create 3 ssh sessions and launch each manually. 
 In SSH  session 1: 
 ```bash
-# kubectl exec -ti pseudo-distributed /bin/bash
-root@pseudo-distributed:/# python /opt/bg_dist.py --job_name=ps --task_index=0
+$ kubectl exec -ti pseudo-distributed /bin/bash
+root@pseudo-distributed:/$ python /opt/bg_dist.py --job_name=ps --task_index=0
 ...
 I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:200] Initialize GrpcChannelCache for job ps -> {0 -> localhost:2222}
 I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:200] Initialize GrpcChannelCache for job worker -> {0 -> localhost:2223, 1 -> localhost:2224}
@@ -14,8 +14,8 @@ I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:221] Started server
 ```
 In SSH session 2: 
 ```bash
-# kubectl exec -ti pseudo-distributed /bin/bash
-root@pseudo-distributed:/#  python /opt/bg_dist.py --job_name=worker --task_index=0
+$ kubectl exec -ti pseudo-distributed /bin/bash
+root@pseudo-distributed:/$  python /opt/bg_dist.py --job_name=worker --task_index=0
 ...
 步驟: 29686, loss: 70.861618042
 步驟: 29885, loss: 70.673828125
@@ -26,8 +26,8 @@ root@pseudo-distributed:/#  python /opt/bg_dist.py --job_name=worker --task_inde
 ```
 In SSH  session 3: 
 ```bash
-# kubectl exec -ti pseudo-distributed /bin/bash
-root@pseudo-distributed:/# python /opt/bg_dist.py --job_name=worker --task_index=1
+$ kubectl exec -ti pseudo-distributed /bin/bash
+root@pseudo-distributed:/$ python /opt/bg_dist.py --job_name=worker --task_index=1
 ...
 步驟: 37398, loss: 70.4796524048
 步驟: 37498, loss: 70.3968429565
@@ -39,5 +39,5 @@ root@pseudo-distributed:/# python /opt/bg_dist.py --job_name=worker --task_index
 ```
 Finally, delete the Pod
 ```bash
-# kubectl delete -f pseudo-distributed.yml
+$ kubectl delete -f pseudo-distributed.yml
 ```

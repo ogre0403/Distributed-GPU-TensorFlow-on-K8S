@@ -1,7 +1,7 @@
 ## Enable GPU in Pod
 ```bash
-# kubectl create -f gpu.yml
-# kubectl logs tensorflow-gpu
+$ kubectl create -f gpu.yml
+$ kubectl logs tensorflow-gpu
 ...
 
 pciBusID 0000:05:00.0
@@ -35,5 +35,6 @@ locality {
 incarnation: 5439146824451313017
 physical_device_desc: "device: 1, name: Tesla M60, pci bus id: 0000:05:00.0"
 ]
-# kubectl delete -f gpu.yml
+
+$ kubectl delete -f gpu.yml
 ```

@@ -2,14 +2,14 @@
 
 This example is identical to [lab3](https://github.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/tree/master/lab03) except enabling GPU support. Each Pod only [require one GPU](https://github.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/blob/e8d615942d82a071d67462e8f9032ae68c817e4a/lab04/worker0-gpu.yml#L22) in yaml. 
 ```bash
-# kubectl create -f ps0.yml
-# kubectl create -f worker0-gpu.yml
-# kubectl create -f worker1-gpu.yml
+$ kubectl create -f ps0.yml
+$ kubectl create -f worker0-gpu.yml
+$ kubectl create -f worker1-gpu.yml
 ```
 
 
 ```bash
-# kubectl get pod --show-all
+$ kubectl get pod --show-all
 NAME                   READY     STATUS      RESTARTS   AGE
 ps0-3586931332-7zh2x   1/1       Running     0          3m
 worker0-vrmmm          0/1       Completed   0          3m
@@ -18,7 +18,7 @@ worker1-gpjkf          0/1       Completed   0          3m
 
 Let's check output of each Pod, and we can see only one available GPU in each Pod.
 ```bash
-# kubectl logs worker0-vrmmm
+$ kubectl logs worker0-vrmmm
 ...
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties:
 name: Tesla M60
@@ -43,7 +43,7 @@ I tensorflow/core/distributed_runtime/master_session.cc:1012] Start master sessi
 步驟: 36999, loss: 70.021156311
 步驟: 37099, loss: 69.9379501343
 
-# kubectl logs worker1-gpjkf
+$ kubectl logs worker1-gpjkf
 ...
 I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties:
 name: Tesla M60
@@ -71,7 +71,7 @@ I tensorflow/core/distributed_runtime/master_session.cc:1012] Start master sessi
 ```
 Finally, delete all Pods. 
 ```bash
-# kubectl delete -f ps0.yml
-# kubectl delete -f worker0.yml
-# kubectl delete -f worker1.yml
+$ kubectl delete -f ps0.yml
+$ kubectl delete -f worker0.yml
+$ kubectl delete -f worker1.yml
 ```
