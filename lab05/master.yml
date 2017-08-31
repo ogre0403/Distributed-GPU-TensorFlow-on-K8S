@@ -23,16 +23,8 @@ spec:
           value: "p@ssw0rd"
         command: ["/bin/sh", "-c"]
         args: ["rm -r /notebooks/*;
-                curl https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab05/train-data.txt -o train-data.txt;
-                curl https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab05/master_client.ipynb -o master_client.ipynb;
+                curl https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab05/basic.ipynb -o basic.ipynb;
                 /run_jupyter.sh --NotebookApp.token=${TOKEN};"]
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp/train
-      volumes:
-        - name: tmp
-          hostPath:
-            path: /tmp/lab05
 
 ---
 apiVersion: v1

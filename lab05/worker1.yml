@@ -25,13 +25,6 @@ spec:
             python /opt/multi_server.py \
                    --worker_hosts=${WORKER_HOSTS} \
                    --task_index=1 ;"]
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp/train
-      volumes:
-        - name: tmp
-          hostPath:
-            path: /tmp/lab05
 
 ---
 apiVersion: v1
