@@ -69,6 +69,32 @@ I tensorflow/core/distributed_runtime/master_session.cc:1012] Start master sessi
 步驟: 33899, loss: 70.0951843262
 步驟: 34100, loss: 69.9206085205
 ```
+We can check the GPU usage in host machine before the Pod is completed. GPU0 and GPU1 are both required by python processes.  
+```bash
+$ nvidia-smi
+Wed Aug 30 22:04:43 2017
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 367.48                 Driver Version: 367.48                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  Tesla M60           Off  | 0000:04:00.0     Off |                  Off |
+| N/A   32C    P0    38W / 150W |   7752MiB /  8123MiB |      7%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  Tesla M60           Off  | 0000:05:00.0     Off |                  Off |
+| N/A   32C    P0    38W / 150W |   7720MiB /  8123MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID  Type  Process name                               Usage      |
+|=============================================================================|
+|    0     10674    C   python                                        7750MiB |
+|    1     11058    C   python                                        7718MiB |
++-----------------------------------------------------------------------------+
+```
+
 Finally, delete all Pods. 
 ```bash
 $ kubectl delete -f ps0.yml
