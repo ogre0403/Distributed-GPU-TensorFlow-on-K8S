@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: master
+        role: worker
+    spec:
+      containers:
+      - name: master
+        image: tensorflow/tensorflow:1.0.1
+        ports:
+        - name: jupyter
+          containerPort: 8888
+        - name: worker
+          containerPort: 2222
+        env:
+        - name: TOKEN
+          value: "p@ssw0rd"
+        command: ["/bin/sh", "-c"]
+        args: ["rm -r /notebooks/*;
+                curl https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab06/train-data.txt -o /tmp/train/train-data.txt;
+                curl https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab06/master_client.ipynb -o master_client.ipynb;
+                /run_jupyter.sh --NotebookApp.token=${TOKEN};"]
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp/train
+      volumes:
+        - name: tmp
+          persistentVolumeClaim:
+            claimName: lab06-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: tf-master-service
+  name: master
+spec:
+  selector:
+    app: master
+  type: LoadBalancer
+  externalIPs:
+  - 140.110.5.194
+  ports:
+  - name: jupyter
+    port: 8888
+    targetPort: 8888
+  - name: worker
+    port: 2222
+    targetPort: 2222

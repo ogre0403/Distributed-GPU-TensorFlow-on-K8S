@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: worker0
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: worker0
+        role: worker
+    spec:
+      containers:
+      - name: worker0
+        image: tensorflow/tensorflow:1.0.1
+        ports:
+        - containerPort: 2222
+        env:
+        - name: WORKER_HOSTS
+          value:
+            "worker0.default.svc.cluster.local:2222,worker1.default.svc.cluster.local:2222,master.default.svc.cluster.local:2222"
+        command: ["/bin/sh", "-c"]
+        args: ["
+            curl https://raw.githubusercontent.com/ogre0403/Distributed-GPU-TensorFlow-on-K8S/master/lab06/multi_server.py -o /opt/multi_server.py;
+            python /opt/multi_server.py \
+                   --worker_hosts=${WORKER_HOSTS} \
+                   --task_index=0 ; "]
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp/train
+      volumes:
+        - name: tmp
+          persistentVolumeClaim:
+            claimName: lab06-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: tf-worker0-service
+  name: worker0
+spec:
+  selector:
+    app: worker0
+  ports:
+  - port: 2222
+    targetPort: 2222
